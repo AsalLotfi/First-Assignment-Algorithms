@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Exercises {
 
     /*
@@ -9,8 +12,18 @@ public class Exercises {
         note: you should return the indices in ascending order and every array's solution is unique
     */
     public int[] productIndices(int[] values, int target) {
-        // todo
-        return null;
+
+        for(int i = 0 ; i < values.length ; i++)
+        {
+            for(int j = i + 1 ; j < values.length ; j++)
+            {
+                if(values[i]*values[j] == target)
+                {
+                    return new int []{i , j};
+                }
+            }
+        }
+        return new int[]{};
     }
 
     /*
@@ -25,8 +38,55 @@ public class Exercises {
         so you should walk in that matrix in a curl and then add the numbers in order you've seen them in a 1D array
     */
     public int[] spiralTraversal(int[][] values, int rows, int cols) {
-        // todo
-        return null;
+
+        if (rows == 0 || cols == 0 || values == null)
+        {
+            return new int[0];
+        }
+
+        int[] result = new int[rows * cols];
+        int top = 0, bottom = rows - 1, left = 0, right = cols - 1;
+        int direction = 0; // Right : 0, Down : 1, Left : 2, Up : 3
+        int index = 0;
+
+        while (top <= bottom && left <= right)
+        {
+            if (direction == 0) // Right
+            {
+                for (int i = left; i <= right; i++)
+                {
+                    result[index++] = values[top][i];
+                }
+                top++;
+            }
+            else if (direction == 1) // Down
+            {
+                for(int i = top; i <= bottom; i++)
+                {
+                    result[index++] = values[i][right];
+                }
+                right--;
+            }
+            else if (direction == 2) // Left
+            {
+                for (int i = right; i >= left; i--)
+                {
+                    result[index++] = values[bottom][i];
+                }
+                bottom--;
+            }
+            else if (direction == 3) // Up
+            {
+                for (int i = bottom; i >= top; i--)
+                {
+                    result[index++] = values[i][left];
+                }
+                left++;
+            }
+            direction = (direction + 1) % 4;
+        }
+
+        return result;
     }
 
     /*
@@ -51,11 +111,34 @@ public class Exercises {
         hint: you can measure the size and order of arrays by finding the pattern of partitions and their number
         trust me, that one's fun and easy :)
 
-        if you're familiar with lists and arraylists, you can also edit method's body to use them instead of array
+        if you're familiar with lists and arraylists, you can also edit method's body to use them instead of array5
     */
     public int[][] intPartitions(int n) {
-        // todo
-        return null;
+        List<List<Integer>> result = new ArrayList<>();
+        generatePartitions(n, n, new ArrayList<>(), result);
+        int[][] partitions = new int[result.size()][];
+        for (int i = 0; i < result.size(); i++)
+        {
+            List<Integer> partition = result.get(i);
+            partitions[i] = partition.stream().mapToInt(Integer::intValue).toArray();
+        }
+        return partitions;
+    }
+
+
+    private void generatePartitions(int remaining, int maxNum, List<Integer> current, List<List<Integer>> result)
+    {
+        if (remaining == 0)
+        {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+        for (int i = Math.min(remaining, maxNum); i >= 1; i--)
+        {
+            current.add(i);
+            generatePartitions(remaining - i, i, current, result);
+            current.removeLast();
+        }
     }
 
     public static void main(String[] args) {
